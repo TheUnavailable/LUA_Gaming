@@ -1,0 +1,32 @@
+local orig_scm = SendChatMessage
+color = true
+stringcolor = "0099FF"
+
+function SendChatMessage(msg,type,lang,chan) 
+	local cmd = string.sub(msg,1,1)
+	local sendString = msg
+   
+	if (cmd=="." or cmd=="!") then
+		orig_scm(msg,type,lang,chan);
+	elseif cmd=="#" then
+		if msg == "#color" then
+			if color == false then
+				color = true
+				DEFAULT_CHAT_FRAME:AddMessage("Color enabled.",1,0,0,1)
+			else
+				color = false
+				DEFAULT_CHAT_FRAME:AddMessage("Color disabed.",0,1,0,1)
+			end
+		elseif string.sub(msg,1,5) == "#set " then
+			stringcolor = string.sub(msg,6,13)
+			DEFAULT_CHAT_FRAME:AddMessage("|cFF" .. stringcolor .. "Color set to " .. stringcolor .. ".|r",0,1,0,1)
+		end
+	else
+		if color==true then
+			sendString = "\124cFF" .. stringcolor .. "\124Hitem: 19:0:0:0:0:0:0:0\124h" .. sendString .. "\124h\124r"
+			orig_scm(sendString,type,lang,chan)
+		else
+			orig_scm(sendString,type,lang,chan)
+		end
+	end
+end
