@@ -1,0 +1,495 @@
+--[[ 
+		Changing a faction for a player
+		This may or may not work. 
+		Testing...
+	]]
+
+	
+-- Variables
+local NPC_ID = 900055555
+-- On Triggers
+function GossipOnTalk(Unit, Event, player)
+	Unit:GossipCreateMenu(100, player, 0)
+	Unit:GossipMenuAddItem(0, "Alliance", 1, 0)
+	Unit:GossipMenuAddItem(0, "Horde", 2, 0)
+	Unit:GossipMenuAddItem(0, "Scourge", 3, 0)
+	Unit:GossipMenuAddItem(0, "Worgen", 4, 0)
+	Unit:GossipMenuAddItem(0, "I'd like another faction", 500, 0)
+	Unit:GossipSendMenu(player)
+end
+
+function GossipOnSelect(Unit, Event, player, id, intid, code, pMisc)
+	if (intid == 1) then
+	Unit:GossipCreateMenu(100, player, 0)
+	Unit:GossipMenuAddItem(0, "Male Human", 5, 0)
+	Unit:GossipMenuAddItem(0, "Female Human", 6, 0)
+	Unit:GossipMenuAddItem(0, "Male Dwarf", 7, 0)
+	Unit:GossipMenuAddItem(0, "Female Dwarf", 8, 0)
+	Unit:GossipMenuAddItem(0, "Male Gnome", 9, 0)
+	Unit:GossipMenuAddItem(0, "Female Gnome", 10, 0)
+	Unit:GossipMenuAddItem(0, "Male Night Elf", 11, 0)
+	Unit:GossipMenuAddItem(0, "Female Night Elf", 12, 0)
+	Unit:GossipMenuAddItem(0, "Male Draenei", 13, 0)
+	Unit:GossipMenuAddItem(0, "Female Draenei", 14, 0)
+	Unit:GossipMenuAdditem(0, "Male Orc", 15, 0)
+	Unit:GossipMenuAddItem(0, "Female Orc", 16, 0)
+	Unit:GossipMenuAddItem(0, "Male Undead", 17, 0)
+	Unit:GossipMenuAddItem(0, "Female Undead", 18, 0)
+	Unit:GossipMenuAddItem(0, "Male Troll", 19, 0)
+	Unit:GossipMenuAddItem(0, "Female Troll", 20, 0)
+	Unit:GossipMenuAddItem(0, "Male Tauren", 21, 0)
+	Unit:GossipMenuAddItem(0, "Female Tauren", 22, 0)
+	Unit:GossipMenuAddItem(0, "Male Blood Elf", 23, 0)
+	Unit:GossipMenuAddItem(0, "Female Blood Elf", 24, 0)
+	Unit:GossipMenuAddItem(0, "I'd like to join another faction", 500, 0)
+	Unit:GossipSendMenu(player)	
+			player:SetFaction(72)
+			player:SetPlayerAtWar(76, 1)
+			player:SetPlayerAtWar(528, 1)
+			playerSetPlayerAtWar(68, 1)
+			player:SendBroadcastMessage("Your now a member of the Alliance!")
+			
+	end
+end	
+	if (intid == 2) then
+	Unit:GossipCreateMenu(100, player, 0)
+	Unit:GossipMenuAddItem(0, "Male Human", 25, 0)
+	Unit:GossipMenuAddItem(0, "Female Human", 26, 0)
+	Unit:GossipMenuAddItem(0, "Male Dwarf", 27, 0)
+	Unit:GossipMenuAddItem(0, "Female Dwarf", 28, 0)
+	Unit:GossipMenuAddItem(0, "Male Gnome", 29, 0)
+	Unit:GossipMenuAddItem(0, "Female Gnome", 30, 0)
+	Unit:GossipMenuAddItem(0, "Male Night Elf", 31, 0)
+	Unit:GossipMenuAddItem(0, "Female Night Elf", 32, 0)
+	Unit:GossipMenuAddItem(0, "Male Draenei", 33, 0)
+	Unit:GossipMenuAddItem(0, "Female Draenei", 34, 0)
+	Unit:GossipMenuAdditem(0, "Male Orc", 35, 0)
+	Unit:GossipMenuAddItem(0, "Female Orc", 36, 0)
+	Unit:GossipMenuAddItem(0, "Male Undead", 37, 0)
+	Unit:GossipMenuAddItem(0, "Female Undead", 38, 0)
+	Unit:GossipMenuAddItem(0, "Male Troll", 39, 0)
+	Unit:GossipMenuAddItem(0, "Female Troll", 30, 0)
+	Unit:GossipMenuAddItem(0, "Male Tauren", 41, 0)
+	Unit:GossipMenuAddItem(0, "Female Tauren", 42, 0)
+	Unit:GossipMenuAddItem(0, "Male Blood Elf", 43, 0)
+	Unit:GossipMenuAddItem(0, "Female Blood Elf", 44, 0)
+	Unit:GossipMenuAddItem(0, "I'd like to join another faction", 500, 0)
+	Unit:GossipSendMenu(player)    	
+			player:SetFaction(76)
+			player:SetPlayerAtWar(72, 1)
+			player:SetPlayerAtWar(528, 1)
+			player:SetPlayerAtWar(68, 1)
+			player:SendBroadcastMessage("Your now a member of the Horde!")
+			
+	end
+	
+	if (intd == 3) then
+	Unit:GossipCreateMenu(100, player, 0)
+	Unit:GossipMenuAddItem(0, "Skeletal Soldier", 45, 0)
+	Unit:GossipMenuAddItem(0, "Blighted Zombie", 46, 0)
+	Unit:GossipMenuAddItem(0, "Darkfallen Archmage (Caster)", 47, 0)
+	Unit:GossipMenuAddItem(0, "Darkfallen Blood Knight (Melee)", 48, 0)
+	Unit:GossipMenuAddItem(0, "Servant of the Throne (Caster)", 49, 0)
+	Unit:GossipMenuAddItem(0, "I'd like to join another faction", 500, 0)
+	Unit:GossipSendMenu(player)		
+			player:SetFaction(529)
+			player:SetPlayerAtWar(72, 1)
+			player:SetPlayerAtWar(76, 1)
+			player:SetPlayerAtWar(68, 1)
+			player:SendBroadcastMessage("Your now a member of the Scourge!")
+			
+	end
+
+	if (intid == 4) then
+	Unit:GossipCreateMenu(100, player, 0)
+	Unit:GossipMenuAddItem(0, "Bloodmoon Worgen", 50, 0)
+	Unit:GossipMenuAddItem(0, "Nightbane Worgen", 51, 0)
+	Unit:GossipMenuAddItem(0, "I'd like to join another faction", 500, 0)
+	Unit:GossipSendMenu(player)		
+			player:SetFaction(68)
+			player:SetPlayerAtWar(72, 1)
+			player:SetPlayerAtWar(76, 1)
+			player:SetPlayerAtWar(68, 1)
+			player:SendBroadcastMessage("Your now a member of the Worgen!")
+			
+	end
+
+
+
+--[[ Changing Displays ]]--
+
+if (intid == 5) then
+	player:SetModel(49)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+if (intid == 6) then
+	player:SetModel(49)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+if (intid == 7) then
+	player:SetModel(52)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 8) then
+	player:SetModel(52)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 9) then
+	player:SetModel(1563)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 10) then
+	player:SetModel(1563)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 11) then
+	player:SetModel(55)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 12) then
+	player:SetModel(55)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 13) then
+	player:SetModel(16125)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 14) then
+	player:SetModel(16125)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 15) then
+	player:SetModel(51)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 16) then
+	player:SetModel(51)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 17) then
+	player:SetModel(57)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 18) then
+	player:SetModel(57)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 19) then
+	player:SetModel(1478)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 20) then
+	player:SetModel(1478)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 21) then
+	player:SetModel(59)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 22) then
+	player:SetModel(59)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 23) then
+	player:SetModel(15476)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 24) then
+	player:SetModel(15476)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 25) then
+	player:SetModel(49)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 26) then
+	player:SetModel(49)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 27) then
+	player:SetModel(52)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 28) then
+	player:SetModel(52)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 29) then
+	player:SetModel(1563)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 30) then
+	player:SetModel(1563)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 31) then
+	player:SetModel(55)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 32) then
+	player:SetModel(55)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 33) then
+	player:SetModel(16125)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 34) then
+	player:SetModel(16125)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 35) then
+	player:SetModel(51)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 36) then
+	player:SetModel(51)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 37) then
+	player:SetModel(57)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 38) then
+	player:SetModel(57)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 39) then
+	player:SetModel(1478)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 40) then
+	player:SetModel(1478)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 41) then
+	player:SetModel(59)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+if (intid == 42) then
+	player:SetModel(59)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+if (intid == 43) then
+	player:SetModel(15476)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 44) then
+	player:SetModel(15476)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 45) then
+	player:SetModel(30616)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 46) then
+	player:SetModel(10970)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 47) then
+	player:SetModel(30713)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 48) then
+	player:SetModel(31025)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+if (intid == 49) then
+	player:SetModel(26919)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+
+if (intid == 50) then
+	player:SetModel(26787)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+end
+
+if (intid == 51) then
+	player:SetModel(657)
+		Unit:GossipCreateMenu(100, player, 0)
+		Unit:GossipMenuAddItem(0, "I'd like another Race please.", 500, 0)
+		Unit:GossipSendMenu(player)
+		player:GossipComplete()
+end
+
+
+
+-- RegisterUnitEvents
+RegisterUnitGossipEvent(90005, 1, "GossipOnTalk")
+RegisterUnitGossipEvent(90005, 2, "GossipOnSelect")
