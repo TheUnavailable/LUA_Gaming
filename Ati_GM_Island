@@ -1,0 +1,17 @@
+Anti = {}
+
+function Anti.Gm(event, player)
+	if(player:IsGm() == false) then
+	 local zone = GetPlayersInZone(876)
+		for k, v in pairs(zone) do
+
+	 	-- msg = string.format("%s has entered the Gm island", player:GetName())
+
+		 v:Teleport(1, 1, 1, 1)
+		 v:CastSpell(36877)	
+		 
+		end
+	end
+end
+ 
+RegisterServerHook(4, "Anti.Gm")
