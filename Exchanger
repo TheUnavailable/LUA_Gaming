@@ -1,0 +1,207 @@
+
+
+local Npc_Id = 90003
+ 
+function Exchanger_OnGossip(pUnit,event,player)
+        pUnit:VendorRemoveAllItems()
+        pUnit:GossipCreateMenu(90001, player, 0)
+        pUnit:GossipMenuAddItem(2,"|cFF00FF00Exchange Me.",1,0)
+		pUnit:GossipMenuAddItem(7,"|cFFFF0000Magick Gold Services.",2,0)
+        pUnit:GossipMenuAddItem(8,"|cffFFFF00Battle Ground Price.",3,0)
+		pUnit:GossipMenuAddItem(8,"|cffFFFF00Arena Price.",4,0)
+		pUnit:GossipMenuAddItem(4,"Never Mind.",5,0)
+        pUnit:GossipSendMenu(player)
+		
+end
+
+function Exchanger_OnSelect(pUnit,event,player,id,intid,code)
+
+     GetMagicGold = WorldDBQuery("SELECT `mg` FROM login.accounts WHERE `login` = '"..player:GetAccountName().."';");
+
+	 MagicGold = GetMagicGold:GetColumn(0):GetLong()
+	 
+	 if (intid == 10) then
+
+	 Exchanger_OnGossip(pUnit,event,player)
+		
+	 end	
+	 
+	 
+	 if (intid == 2) then
+
+		 pUnit:GossipCreateMenu(57, player, 0)
+	     pUnit:GossipMenuAddItem(7,"|cFFFF0000350 ARENA Point ( 100 Magick Gold )\n",12,0)
+	     pUnit:GossipMenuAddItem(7,"|cFFFF000050.000 HONOR Point ( 100 Magick Gold )\n",13,0)
+		 pUnit:GossipMenuAddItem(7,"|cFFFF0000x75 PvP Tokens ( 100 Magick Gold )\n",14,0)
+		 pUnit:GossipMenuAddItem(7,"|cFF00FF00Need To Check My Magick Gold!\n",11,0)
+		 pUnit:GossipMenuAddItem(4, "[ Back ]",10,0)
+		 pUnit:GossipSendMenu(player)
+		 
+     end
+
+
+if (intid == 11) then
+
+     --GetMagicGold = WorldDBQuery("SELECT `mg` FROM login.accounts WHERE `login` = '"..player:GetAccountName().."';");
+
+	 --MagicGold = GetMagicGold:GetColumn(0):GetLong()
+
+	 pUnit:GossipCreateMenu(57, player, 0)
+	 pUnit:GossipMenuAddItem(2, "Your Magick Gold: "..MagicGold.." ", 11, 0)
+     pUnit:GossipMenuAddItem(4, "[ Back ]",2,0)
+	 pUnit:GossipSendMenu(player)
+
+
+end
+
+
+if (intid == 1) then
+        pUnit:VendorAddItem(40343,1,0)
+        pUnit:VendorAddItem(35015,1,0)
+      --  pUnit:VendorAddItem(41334,1,0)
+      --  pUnit:VendorAddItem(41266,1,0)
+        pUnit:GossipCreateMenu(101, player, 0)
+        pUnit:GossipMenuAddItem(7,"Are you sure you want an exchange?!\n",100,0)
+        pUnit:GossipMenuAddItem(4, "[ Back ]",10,0)
+        pUnit:GossipSendMenu(player)
+end	
+
+ 
+if (intid == 3) then
+        pUnit:GossipCreateMenu(101, player, 0)
+        pUnit:GossipMenuAddItem(7,"|cFFFF000050.000 HONOR Point ( 50 Battlegrounds Price )\n",6,0)
+        pUnit:GossipMenuAddItem(7,"|cFFFF0000x75 PvP Tokens ( 50 Battlegrounds Price )\n",7,0)
+        pUnit:GossipMenuAddItem(4, "[ Back ]",10,0)
+        pUnit:GossipSendMenu(player)
+end
+
+if (intid == 4) then
+        pUnit:GossipCreateMenu(101, player, 0)
+        pUnit:GossipMenuAddItem(7,"|cff388E8E150 ARENA Point ( 100 Arena Price )\n",8,0)
+        pUnit:GossipMenuAddItem(7,"|cff388E8E350 ARENA Point ( 225 Arena Price )\n",9,0)
+        pUnit:GossipMenuAddItem(4, "[ Back ]",10,0)
+        pUnit:GossipSendMenu(player)
+end
+
+
+if (intid == 6) then
+
+    if (player:GetItemCount(49426) >= 50) then
+	   player:RemoveItem(49426, 50)
+	   player:GiveHonor(5000)
+	   player:SendBroadcastMessage("I gived you 5000 Honor Points, Pay it well!")
+       player:SendAreaTriggerMessage("I gived you 5000 Honor Points, Pay it well!")
+	   player:GossipComplete(player)
+	else
+	  player:SendAreaTriggerMessage("|cFFFF0000You Need The Materials!")
+	   player:GossipComplete(player)
+	end
+	
+end	
+
+if (intid == 7) then
+
+    if (player:GetItemCount(49426) >= 50) then
+	   player:RemoveItem(49426, 50)
+	   player:AddItem(20008, 5)
+	   player:GossipComplete(player)
+	   --
+	else
+	  player:SendAreaTriggerMessage("|cFFFF0000You Need The Materials!")
+	   player:GossipComplete(player)
+	end
+	
+end	
+
+if (intid == 8) then
+
+    if (player:GetItemCount(49426) >= 100) then
+	   player:RemoveItem(49426, 100)
+	   player:AddArenaPoints(150)
+	   player:SendBroadcastMessage("I gived you 150 Arena Points, Pay it well!")
+       player:SendAreaTriggerMessage("I gived you 150 Arena Points, Pay it well!")
+	   player:GossipComplete(player)
+	else
+	  player:SendAreaTriggerMessage("|cFFFF0000You Need The Materials!")
+	   player:GossipComplete(player)
+	end
+	
+end
+
+if (intid == 9) then
+
+    if (player:GetItemCount(49426) >= 225) then
+	   player:RemoveItem(49426, 225)
+	   player:AddArenaPoints(350)
+	   player:SendBroadcastMessage("I gived you 350 Arena Points, Pay it well!")
+	   player:SendAreaTriggerMessage("I gived you 350 Arena Points, Pay it well!")
+	   player:GossipComplete(player)
+	else
+	  player:SendAreaTriggerMessage("|cFFFF0000You Need The Materials!")
+	   player:GossipComplete(player)
+	end
+	
+end
+
+
+if (intid == 12) then
+	 
+	 if (MagicGold >= 100) then
+	 local lol = MagicGold - 100
+       CharDBQuery("update `login`.`accounts` set `mg` = '"..lol.."' WHERE `login` = '"..player:GetAccountName().."';");
+	   player:AddArenaPoints(350)
+	   player:SendBroadcastMessage("I gived you 350 Arena Points, Pay it well!")
+	   player:SendAreaTriggerMessage("I gived you 350 Arena Points, Pay it well!")
+	   player:GossipComplete(player)
+	else
+	  player:SendAreaTriggerMessage("|cFFFF0000You Need The Materials!")
+	  player:GossipComplete(player)
+	end
+
+end	
+
+if (intid == 13) then
+	 
+	 if (MagicGold >= 100) then
+	 local lol = MagicGold - 100
+       CharDBQuery("update `login`.`accounts` set `mg` = '"..lol.."' WHERE `login` = '"..player:GetAccountName().."';");
+	   player:GiveHonor(5000)
+	   player:SendBroadcastMessage("I gived you 5000 Honor Points, Pay it well!")
+	   player:SendAreaTriggerMessage("I gived you 5000 Honor Points, Pay it well!")
+	   player:GossipComplete(player)
+	else
+	  player:SendAreaTriggerMessage("|cFFFF0000You Need The Materials!")
+	  player:GossipComplete(player)
+	end
+
+end	
+
+if (intid == 14) then
+	 
+	 if (MagicGold >= 100) then
+	 local lol = MagicGold - 100
+       CharDBQuery("update `login`.`accounts` set `mg` = '"..lol.."' WHERE `login` = '"..player:GetAccountName().."';");
+	   player:AddItem(20008, 5)
+	   --
+	   player:GossipComplete(player)
+	else
+	  player:SendAreaTriggerMessage("|cFFFF0000You Need The Materials!")
+	  player:GossipComplete(player)
+	end
+
+end	
+
+if (intid == 5) then
+     player:GossipComplete(player)
+end
+
+
+if (intid == 100) then
+     player:SendVendorWindow(pUnit)
+end
+
+
+end
+
+RegisterUnitGossipEvent(Npc_Id, 1, "Exchanger_OnGossip")
+RegisterUnitGossipEvent(Npc_Id, 2, "Exchanger_OnSelect")
