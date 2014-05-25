@@ -1,0 +1,52 @@
+--[[
+Worked
+]]--
+
+
+function GetingRace (event, player, message, type, language)
+
+  if (message == "#t") then
+     local pplrace = ""
+	 local target = player:GetSelection()	
+	 if (target == nil) then
+	 pplrace =  "<no target>"
+	 elseif (target:IsPlayer() ~= true) then
+	 pplrace = "This creature is not a player"
+
+	 else
+	 
+		if (target:GetPlayerClass() == "Warrior") then
+		 pplrace = "Warrior"
+		 elseif (target:GetPlayerClass() == "Hunter") then
+		 pplrace = "Hunter"
+		 elseif (target:GetPlayerClass() == "Mage") then
+		 pplrace = "Mage"
+	 	 elseif (target:GetPlayerClass() == "Priest") then
+		 pplrace = "Priest"
+	 	 elseif (target:GetPlayerClass() == "Warlock") then
+		 pplrace = "Warlock"
+		 elseif (target:GetPlayerClass() == "Shaman") then
+		 pplrace = "Shaman"
+		 elseif (target:GetPlayerClass() == "Druid") then
+		 pplrace = "Druid"
+		 elseif (target:GetPlayerClass() == "Paladin") then
+		 pplrace = "Paladin"
+		 elseif (target:GetPlayerClass() == "Rogue") then
+		 pplrace = "Rogue"
+		 elseif (target:GetPlayerClass() == "Death Knight") then
+		 pplrace = "Death Knight"
+		end
+
+		player:SendBroadcastMessage("|cFFFFFFFF[|Hplayer:"..player:GetName().."|h"..player:GetName().."|h] says: "..pplrace.."|r")	
+		for k,v in pairs(player:GetInRangePlayers()) do
+		 v:SendBroadcastMessage("|cFFFFFFFF[|Hplayer:"..player:GetName().."|h"..player:GetName().."|h] says: "..pplrace.."|r")
+		end
+
+		 --player:SendChatMessage(12, 0, "|cFFFFFFFF[|Hplayer:"..player:GetName().."|h"..player:GetName().."|h] says: "..pplrace.."|r")
+	 return 0
+	 end
+  end
+
+end
+
+RegisterServerHook(16, "GetingRace")
