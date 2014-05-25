@@ -1,0 +1,569 @@
+--[[
+ 
+                        Lua Global Chat & Rock Paper Scissors Game Script
+                        Scripted by Grandelf
+                        Shared to MMOwned.com by Hellgawd (The best emulation site.)
+                       
+                        ChatSystem: A world chat, with admin, gm and vip ranks.
+                        GameSystem: Paper, stone and scissors. You can see how many times you played, and how many you wont and how many you lost.
+                       
+                        You can block the chat or/and game as a player if you want.
+]]--
+ 
+ 
+local ChatMsg = "#chat"
+local BlockChat = "#blockchat"
+local UnblockChat = "#unblockchat"
+local BanMsg = "#banchatplr"
+local UnbanMsg = "#unbanchatplr"
+local Space = " "
+local GameMsg = "#game"
+local Stone = "#stone"
+local Scissors = "#scissors"
+local Paper = "#paper"
+local BlockGame = "#blockgame"
+local UnblockGame = "#unblockgame"
+local GameInfoMsg = "#gameinfo"
+local Commands = "#commands"
+ 
+local played = 0
+local lost = 0
+local won = 0
+ 
+function ChatSystem(event, player, message, type, language)
+        local startpos, endpos = string.find(message, ChatMsg)
+        if(startpos == 1) then
+                local text = message:gsub(ChatMsg, "")
+                if (BanCheck(player) == true) then
+                        if (BlockCheck(player) == true) then
+                                local plrs = GetPlayersInWorld()
+                                for k, v in pairs(plrs) do
+                                        if (BlockCheck(v) == true) then
+                                                local Block = CharDBQuery("SELECT Block FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                if (Block == "0") then
+                                                        local GMrank = player:GetGmRank()
+                                                        if (GMrank == 'az') then
+                                                                v:SendBroadcastMessage("|cFF00FFFF[Admin] |cFF008000"..player:GetName()..": |cFFFFA500"..text.."")
+                                                        elseif (GMrank == 'a') then
+                                                                v:SendBroadcastMessage("|cFF00FFFF[GM] |cFF008000"..player:GetName()..": |cFFFFA500"..text.."")
+                                                        elseif (GMrank == 'v') then
+                                                                v:SendBroadcastMessage("|cFF00FFFF[VIP] |cFF008000"..player:GetName()..": |cFFFFA500"..text.."")
+                                                        else
+                                                                v:SendBroadcastMessage("|cFF008000"..player:GetName()..": |cFFFFA500"..text.."")
+                                                        end
+                                                end            
+                                        end    
+                                end    
+                        else
+                                player:SendBroadcastMessage("You have blocked the chat")
+                        end
+                else
+                        player:SendBroadcastMessage("You have been banned from the chat and will not be able to use this command")
+                end
+        end
+        local startpos, endpos = string.find(message, BanMsg)
+        if(startpos == 1) then
+                local Ban = message:gsub(BanMsg, "")
+                local startp, endp = string.find(Ban, Space)
+                        if(startp == 1) then
+                        local plr = Unban:gsub(Space ,"")
+                        local plyr = CharDBQuery("SELECT Player FROM chat WHERE Player = '"..plr.."'", 0)
+                        if (player:CanUseCommand("a") == true) then
+                                if (plyr == plr) then
+                                        if (CheckBan(plr) == true) then
+                                                CharDBQuery("UPDATE chat SET Block = '1' WHERE Player = '"..plr.."'", 0)
+                                                CharDBQuery("UPDATE chat SET Banned = '1' WHERE Player = '"..plr.."'", 0)
+                                                local plrs = GetPlayersInWorld()
+                                                for k, v in pairs(plrs) do
+                                                        v:SendBroadcastMessage("|cFFFF0000A"..plr.." has been banned from the chat by "..player:GetName().."")
+                                                end
+                                        else
+                                                player:SendBroadcastMessage("This player is already banned")
+                                        end
+                                else   
+                                        player:SendBroadcastMessage("This player doesn't exist")
+                                end    
+                        end    
+                end
+        end    
+        local startpos, endpos = string.find(message, UnbanMsg)
+        if(startpos == 1) then
+                local Unban = message:gsub(UnbanMsg, "")
+                local startp, endp = string.find(Unban, Space)
+                        if(startp == 1) then
+                        local plr = Unban:gsub(Space ,"")
+                        local plyr = CharDBQuery("SELECT Player FROM chat WHERE Player = '"..plr.."'", 0)
+                        if (player:CanUseCommand("a") == true) then
+                                if (plyr == plr) then
+                                        if (CheckBan(plr) == false) then
+                                        CharDBQuery("UPDATE chat SET Block = '0' WHERE Player = '"..plr.."'", 0)
+                                        CharDBQuery("UPDATE chat SET Banned = '0' WHERE Player = '"..plr.."'", 0)
+                                        local plrs = GetPlayersInWorld()
+                                                for k, v in pairs(plrs) do
+                                                        v:SendBroadcastMessage("|cFFFF0000A"..plr.." has been allowed to join the chat again by "..player:GetName().."")
+                                                end
+                                        else   
+                                                player:SendBroadcastMessage("This player is not banned")
+                                        end
+                                else   
+                                        player:SendBroadcastMessage("This player doesn't exist")
+                                end    
+                        end    
+                end    
+        end    
+        if (message == BlockChat) then 
+                if (BanCheck(player) == true) then
+                        if (BlockCheck(player) == true) then
+                                CharDBQuery("UPDATE chat SET Block = '1' WHERE Player = '"..player:GetName().."'", 0)
+                                player:SendBroadcastMessage("You will see the chat messages again.")
+                        else
+                                player:SendBroadcastMessage("You did already block the chat")
+                        end
+                else
+                        player:SendBroadcastMessage("You have been banned from the chat and will not be able to use this command")
+                end
+        end    
+        if (message == UnblockChat) then       
+                if (BanCheck(player) == true) then
+                        if (BlockCheck(player) == false) then
+                                CharDBQuery("UPDATE chat SET Block = '0' WHERE Player = '"..player:GetName().."'", 0)
+                                player:SendBroadcastMessage("From now on you will not see the chat messages anymore.")
+                        else
+                                player:SendBroadcastMessage("You haven't blocked the chat")
+                        end
+                else
+                        player:SendBroadcastMessage("You have been banned from the chat and will not be able to use this command")
+                end
+        end
+        local startpos, endpos = string.find(message, GameMsg)
+        if(startpos == 1) then
+                local GameA = message:gsub(GameMsg, "")
+                local startp, endp = string.find(GameA, Space)
+                if(startp == 1) then
+                        local IsGaming = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                        if (IsGaming == "AZ") then
+                                local plr = GameA:gsub(Space, "")
+                                local online = CharDBQuery("SELECT online FROM characters WHERE name = '"..plr.."'", 0)
+                                if (online == "1") then
+                                        local Block = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..plr.."'", 0)
+                                        if (Block ~= "5") then
+                                                local BlockA = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                if (BlockA ~= "5") then
+                                                        if (player:GetName() ~= plr) then
+                                                                local plrs = GetPlayersInWorld()
+                                                                for k, v in pairs(plrs) do
+                                                                        if (v:GetName() == plr) then
+                                                                                local GameCheck = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..plr.."'", 0)
+                                                                                if (GameCheck == "AZ") then
+                                                                                        CharDBQuery("UPDATE chat SET Game = '"..plr.."' WHERE Player = '"..player:GetName().."'", 0)
+                                                                                        CharDBQuery("UPDATE chat SET Game = '"..player:GetName().."' WHERE Player = '"..plr.."'", 0)
+                                                                                        v:SendBroadcastMessage(""..player:GetName().." wants to play paper, scissor and stone with you. Typ #paper #scissors or #stone in less then 20 sec to play")
+                                                                                        player:SendBroadcastMessage("Invitation sended...")
+                                                                                        CharDBQuery("UPDATE chat SET Gphase = '1' WHERE Player = '"..v:GetName().."'", 0)
+                                                                                        RegisterTimedEvent("Wait", 20000, 1, player)
+                                                                                else
+                                                                                        player:SendBroadcastMessage("That player is already playing a game")
+                                                                                end    
+                                                                        end
+                                                                end
+                                                        else
+                                                                player:SendBroadcastMessage("You cant challange yourself")
+                                                        end
+                                                else
+                                                        player:SendBroadcastMessage("You cant challange players when you blocked others from challanging you")
+                                                end    
+                                        else
+                                                player:SendBroadcastMessage("You cant challange players who blocked the game.")
+                                        end            
+                                else
+                                        player:SendBroadcastMessage("The player you want to play a game with is offline")
+                                end
+                        else
+                                player:SendBroadcastMessage("You are already playing a game.")
+                        end
+                end
+        end
+        --[[
+       
+                        Gphase (GamePhase) numbers:
+       
+                        Gphase 1 = Player allowed to use #paper, #stone or #scissors
+                        Gphase 2 = Player used #paper
+                        Gphase 3 = Player used #stone
+                        Gphase 4 = Player used #scissor
+                        Gphase 5 = Player has blocked the game
+       
+        ]]--
+        if (message == Stone) then
+                local IsGaming = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                if (IsGaming ~= "AZ") then
+                        local Gphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                        local plr = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                        local PlrGphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..plr.."'", 0)
+                        if (PlrGphase > "1") then
+                                CharDBQuery("UPDATE chat SET Gphase = '2' WHERE Player = '"..player:GetName().."'", 0)
+                                player:SendBroadcastMessage("You chose Stone!")                                
+                        elseif (Gphase == "1") then
+                                CharDBQuery("UPDATE chat SET Gphase = '3' WHERE Player = '"..player:GetName().."'", 0)
+                                CharDBQuery("UPDATE chat SET Gphase = '1' WHERE Player = '"..plr.."'", 0)
+                                player:SendBroadcastMessage("You chose stone!")
+                                local plrs = GetPlayersInWorld()
+                                for k, v in pairs(plrs) do
+                                        if (v:GetName() == plr) then
+                                                v:SendBroadcastMessage("You can now use one of the commands #paper #scissors or #stone, you have 20 sec.")
+                                                RegisterTimedEvent("WaitTwo", 20000, 1, player)
+                                        end
+                                end
+                        else
+                                player:SendBroadcastMessage("The player you was playing a game with didnt choose if he wanted paper, scissors or stone yet.")
+                        end
+                else
+                        player:SendBroadcastMessage("You have to challange a player first before using this command")
+                end    
+        end    
+        if (message == Scissors) then
+                local IsGaming = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                if (IsGaming ~= "AZ") then
+                        local Gphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                        local plr = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                        local PlrGphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..plr.."'", 0)
+                        if (PlrGphase > "1") then
+                                CharDBQuery("UPDATE chat SET Gphase = '2' WHERE Player = '"..player:GetName().."'", 0)
+                                player:SendBroadcastMessage("You chose scissors!")                                     
+                        elseif (Gphase == "1") then
+                                CharDBQuery("UPDATE chat SET Gphase = '4' WHERE Player = '"..player:GetName().."'", 0)
+                                CharDBQuery("UPDATE chat SET Gphase = '1' WHERE Player = '"..plr.."'", 0)
+                                player:SendBroadcastMessage("You chose scissors!")
+                                local plrs = GetPlayersInWorld()
+                                for k, v in pairs(plrs) do
+                                        if (v:GetName() == plr) then
+                                                v:SendBroadcastMessage("You can now use one of the commands #paper #scissors or #stone, you have 20 sec.")
+                                                RegisterTimedEvent("WaitTwo", 20000, 1, player)
+                                        end
+                                end
+                        else
+                                player:SendBroadcastMessage("The player you was playing a game with didnt choose if he wanted paper, scissors or stone yet.")
+                        end
+                else
+                        player:SendBroadcastMessage("You have to challange a player first before using this command")
+                end    
+        end    
+        if (message == Paper) then
+                local IsGaming = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                if (IsGaming ~= "AZ") then
+                        local Gphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                        local plr = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                        local PlrGphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..plr.."'", 0)
+                        if (PlrGphase > "1") then
+                                CharDBQuery("UPDATE chat SET Gphase = '2' WHERE Player = '"..player:GetName().."'", 0)
+                                player:SendBroadcastMessage("You chose paper!")                        
+                        elseif (Gphase == "1") then
+                                CharDBQuery("UPDATE chat SET Gphase = '2' WHERE Player = '"..player:GetName().."'", 0)
+                                CharDBQuery("UPDATE chat SET Gphase = '1' WHERE Player = '"..plr.."'", 0)
+                                player:SendBroadcastMessage("You chose Paper!")
+                                local plrs = GetPlayersInWorld()
+                                for k, v in pairs(plrs) do
+                                        if (v:GetName() == plr) then
+                                                v:SendBroadcastMessage("You can now use one of the commands #paper #scissors or #stone, you have 20 sec.")
+                                                RegisterTimedEvent("WaitTwo", 20000, 1, player)
+                                        end
+                                end
+                        else
+                                player:SendBroadcastMessage("The player you was playing a game with didnt choose if he wanted paper, scissors or stone yet.")
+                        end
+                else
+                        player:SendBroadcastMessage("You have to challange a player first before using this command")
+                end    
+        end
+        if (message == BlockGame) then 
+                local Gphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                if (Gphase == "0") then
+                        local IsGaming = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                        if (IsGaming == "AZ") then
+                                CharDBQuery("UPDATE chat SET Gphase = '5' WHERE Player = '"..player:GetName().."'", 0)
+                                player:SendBroadcastMessage("Players can no longer challange you")
+                        else
+                                player:SendBroadcastMessage("You can't block games when you are playing one.")
+                        end
+                elseif (Gphase ~= "0") then
+                        if (Gphase < "5") then
+                                player:SendBroadcastMessage("You can't block games when you are playing one.")
+                        end
+                else
+                        player:SendBroadcastMessage("You did already block players from challenging you.")
+                end    
+        end    
+        if (message == UnblockGame) then       
+                local Gphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                if (Gphase == "5") then
+                        CharDBQuery("UPDATE chat SET Gphase = '0' WHERE Player = '"..player:GetName().."'", 0)
+                        player:SendBroadcastMessage("Players are now able to challange you again")
+                else
+                        player:SendBroadcastMessage("You haven't blocked players from challanging you")
+                end
+        end    
+        local startpos, endpos = string.find(message, GameInfoMsg)
+        if(startpos == 1) then
+                local GameInf = message:gsub(GameInfoMsg, "")
+                local startp, endp = string.find(GameInf, Space)
+                if(startp == 1) then
+                        local plr = GameInf:gsub(Space ,"")
+                        local Gphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..plr.."'", 0)
+                        if (Gphase == "5") then
+                                player:SendBroadcastMessage("|cFFFF0000Status: |cFF00FFFFBlocked players from challanging")
+                        else
+                                player:SendBroadcastMessage("|cFFFF0000Status: |cFF00FFFFDid not block players from challanging")
+                        end
+                        local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..plr.."'", 0)
+                        local won = CharDBQuery("SELECT Won FROM chat WHERE Player = '"..plr.."'", 0)
+                        local lost = CharDBQuery("SELECT Lost FROM chat WHERE Player = '"..plr.."'", 0)
+                        player:SendBroadcastMessage("|cFFFF0000Played: |cFF00FFFF"..played.." games")
+                        player:SendBroadcastMessage("|cFFFF0000Won: |cFF00FFFF"..won.." games")
+                        player:SendBroadcastMessage("|cFFFF0000Lost: |cFF00FFFF"..lost.." games")
+                end
+        end
+        if (message == Commands) then
+                if (player:CanUseCommand("a") == true) then
+                        player:SendBroadcastMessage("|cFFFF0000Commands:")
+                        player:SendBroadcastMessage("|cFF00FFFF"..ChatMsg..": |cFFFFA500Typ "..ChatMsg.." text to write in world chat.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..BlockChat..": |cFFFFA500Typ "..BlockChat.." to block the chat.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..UnblockChat..": |cFFFFA500Typ "..UnblockChat.." to unblock the chat.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..GameMsg..": |cFFFFA500Typ "..GameMsg.." name to challange someone for a game.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..BlockGame..": |cFFFFA500Typ "..BlockGame.." to block players from challanging you.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..UnblockGame..": |cFFFFA500Typ "..UnblockGame.." to allow players to challange you again.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..GameInfoMsg..": |cFFFFA500Typ "..GameInfoMsg.." name, to see someone's game info.")
+                        player:SendBroadcastMessage("|cFFFF0000 Gm Commands:")
+                        player:SendBroadcastMessage("|cFF00FFFF"..BanMsg..": |cFFFFA500Typ "..BanMsg.." name, to ban a player from the chat.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..UnbanMsg..": |cFFFFA500Typ "..UnbanMsg.." name, to allow a player to join the chat again..")
+                else
+                        player:SendBroadcastMessage("|cFF00FFFFCommands:")
+                        player:SendBroadcastMessage("|cFF00FFFF"..ChatMsg..": |cFFFFA500Typ "..ChatMsg.." text to write in world chat.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..BlockChat..": |cFFFFA500Typ "..BlockChat.." to block the chat.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..UnblockChat..": |cFFFFA500Typ "..UnblockChat.." to unblock the chat.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..GameMsg..": |cFFFFA500Typ "..GameMsg.." name to challange someone for a game.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..BlockGame..": |cFFFFA500Typ "..BlockGame.." to block players from challanging you.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..UnblockGame..": |cFFFFA500Typ "..UnblockGame.." to allow players to challange you again.")
+                        player:SendBroadcastMessage("|cFF00FFFF"..GameInfoMsg..": |cFFFFA500Typ "..GameInfoMsg.." name, to see someone's game info.")  
+                end
+        end            
+end    
+ 
+function BlockCheck(player)
+        local Block = CharDBQuery("SELECT Block FROM chat WHERE Player = '"..player:GetName().."'", 0)
+        if (Block == "0") then
+                return true
+        else
+                return false
+        end
+end
+ 
+function BanCheck(player)
+        local Banned = CharDBQuery("SELECT Banned FROM chat WHERE Player = '"..player:GetName().."'", 0)
+        if (Banned == "0") then
+                return true
+        else
+                return false
+        end
+end
+ 
+function CheckBan(player)
+        local Banned = CharDBQuery("SELECT Banned FROM chat WHERE Player = '"..player.."'", 0)
+        if (Banned == "0") then
+                return true
+        else
+                return false
+        end
+end
+ 
+function Wait(player)
+        local Gphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..player:GetName().."'", 0)
+        if (Gphase < "1") then
+                local plr = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                CharDBQuery("UPDATE chat SET Game = 'AZ' WHERE Player = '"..plr.."'", 0)
+                CharDBQuery("UPDATE chat SET Gphase = '0' WHERE Player = '"..plr.."'", 0)
+                CharDBQuery("UPDATE chat SET Game = 'AZ' WHERE Player = '"..player:GetName().."'", 0)
+                player:SendBroadcastMessage("The player you wanted to play a game with did not wanted to play with you")       
+        end    
+end
+ 
+function WaitTwo(player)
+        local plr = CharDBQuery("SELECT Game FROM chat WHERE Player = '"..player:GetName().."'", 0)
+        local Gphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..plr.."'", 0)
+        if (Gphase == "1") then
+                CharDBQuery("UPDATE chat SET Game = 'AZ' WHERE Player = '"..plr.."'", 0)
+                CharDBQuery("UPDATE chat SET Gphase = '0' WHERE Player = '"..plr.."'", 0)
+                CharDBQuery("UPDATE chat SET Game = 'AZ' WHERE Player = '"..player:GetName().."'", 0)
+                CharDBQuery("UPDATE chat SET Gphase = '0' WHERE Player = '"..player:GetName().."'", 0)
+                player:SendBroadcastMessage("The player you was playing a game with didnt choose if he wanted paper, scissors or stone.")
+        else
+                local PlrGphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..plr.."'", 0)
+                local PlayerGphase = CharDBQuery("SELECT Gphase FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                CharDBQuery("UPDATE chat SET Game = 'AZ' WHERE Player = '"..plr.."'", 0)
+                CharDBQuery("UPDATE chat SET Gphase = '0' WHERE Player = '"..plr.."'", 0)
+                CharDBQuery("UPDATE chat SET Game = 'AZ' WHERE Player = '"..player:GetName().."'", 0)
+                CharDBQuery("UPDATE chat SET Gphase = '0' WHERE Player = '"..player:GetName().."'", 0)
+                local plrs = GetPlayersInWorld()
+                for k, v in pairs(plrs) do
+                        if (v:GetName() == plr) then
+                                if (PlrGphase == "2") then
+                                        if (PlayerGphase == "2") then
+                                                player:SendBroadcastMessage("You both chose paper")
+                                                v:SendBroadcastMessage("You both chose paper")
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..player:GetName().."'", 0)
+                                        end
+                                end
+                                if (PlrGphase == "2") then     
+                                        if (PlayerGphase == "3") then
+                                                player:SendBroadcastMessage(""..v:GetName().." has won the game.")
+                                                v:SendBroadcastMessage(""..v:GetName().." has won the game.")
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                local won = CharDBQuery("SELECT Won FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                won = won + 1
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Won = '"..won.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                local lost = CharDBQuery("SELECT Lost FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                played = played + 1
+                                                lost = lost + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..player:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Lost = '"..lost.."' WHERE Player = '"..player:GetName().."'", 0)
+                                        end
+                                end                                    
+                                if (PlrGphase == "2") then     
+                                        if (PlayerGphase == "4") then
+                                                player:SendBroadcastMessage(""..player:GetName().." has won the game.")
+                                                v:SendBroadcastMessage(""..player:GetName().." has won the game.")
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                local lost = CharDBQuery("SELECT Lost FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                lost = lost + 1
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Lost = '"..lost.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                local won = CharDBQuery("SELECT Won FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                played = played + 1
+                                                Won = Won + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..player:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Won = '"..won.."' WHERE Player = '"..player:GetName().."'", 0)
+                                        end
+                                end                                    
+                                if (PlrGphase == "3") then
+                                        if (PlayerGphase == "2") then
+                                                player:SendBroadcastMessage(""..player:GetName().." has won the game.")
+                                                v:SendBroadcastMessage(""..player:GetName().." has won the game.")
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                local lost = CharDBQuery("SELECT Lost FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                lost = lost + 1
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Lost = '"..lost.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                local won = CharDBQuery("SELECT Won FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                played = played + 1
+                                                Won = Won + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..player:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Won = '"..won.."' WHERE Player = '"..player:GetName().."'", 0)
+                                        end
+                                end                                    
+                                if (PlrGphase == "3") then
+                                        if (PlayerGphase == "3") then
+                                                player:SendBroadcastMessage("You both chose stone")
+                                                v:SendBroadcastMessage("You both chose stone")
+                                                player:SendBroadcastMessage("You both chose paper")
+                                                v:SendBroadcastMessage("You both chose paper")
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..player:GetName().."'", 0)
+                                        end
+                                end                                    
+                                if (PlrGphase == "3") then     
+                                        if (PlayerGphase == "4") then
+                                                player:SendBroadcastMessage(""..v:GetName().." has won the game.")
+                                                v:SendBroadcastMessage(""..v:GetName().." has won the game.")
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                local won = CharDBQuery("SELECT Won FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                won = won + 1
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Won = '"..won.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                local lost = CharDBQuery("SELECT Lost FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                played = played + 1
+                                                lost = lost + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..player:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Lost = '"..lost.."' WHERE Player = '"..player:GetName().."'", 0)
+                                        end
+                                end                                    
+                                if (PlrGphase == "4") then
+                                        if (PlayerGphase == "2") then
+                                                player:SendBroadcastMessage(""..v:GetName().." has won the game.")
+                                                v:SendBroadcastMessage(""..v:GetName().." has won the game.")
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                local won = CharDBQuery("SELECT Won FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                won = won + 1
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Won = '"..won.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                local lost = CharDBQuery("SELECT Lost FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                played = played + 1
+                                                lost = lost + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..player:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Lost = '"..lost.."' WHERE Player = '"..player:GetName().."'", 0)
+                                        end
+                                end                                    
+                                if (PlrGphase == "4") then     
+                                        if (PlayerGphase == "3") then
+                                                player:SendBroadcastMessage(""..player:GetName().." has won the game.")
+                                                v:SendBroadcastMessage(""..player:GetName().." has won the game.")
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                local lost = CharDBQuery("SELECT Lost FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                lost = lost + 1
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Lost = '"..lost.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                local won = CharDBQuery("SELECT Won FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                played = played + 1
+                                                Won = Won + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..player:GetName().."'", 0)
+                                                CharDBQuery("UPDATE chat SET Won = '"..won.."' WHERE Player = '"..player:GetName().."'", 0)
+                                        end
+                                end                                    
+                                if (PlrGphase == "4") then     
+                                        if (PlayerGphase == "4") then
+                                                player:SendBroadcastMessage("You both chose scissors")
+                                                v:SendBroadcastMessage("You both chose scissors")
+                                                player:SendBroadcastMessage("You both chose paper")
+                                                v:SendBroadcastMessage("You both chose paper")
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..v:GetName().."'", 0)
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..v:GetName().."'", 0)
+                                                local played = CharDBQuery("SELECT Played FROM chat WHERE Player = '"..player:GetName().."'", 0)
+                                                played = played + 1
+                                                CharDBQuery("UPDATE chat SET Played = '"..played.."' WHERE Player = '"..player:GetName().."'", 0)
+                                        end
+                                end
+                        end
+                end    
+        end    
+end
+ 
+function EnterPlrToDB(event, player)
+        local plr = CharDBQuery("SELECT Player FROM chat WHERE Player = '"..player:GetName().."'", 0)
+        if (plr == false) then
+                CharDBQuery("INSERT INTO chat(Player, Banned, Block, Game, Gphase, Played, Won, Lost) VALUES ('"..player:GetName().."', '0', '0', 'AZ', '0', '0', '0', '0')", 0)
+        end
+end
+ 
+RegisterServerHook(4, "EnterPlrToDB")
+RegisterServerHook(16, "ChatSystem")
